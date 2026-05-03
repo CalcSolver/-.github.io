@@ -6,7 +6,6 @@
     <title>404 Not Found</title>
     <link id="fav" rel="shortcut icon" type="image/png" href="https://www.google.com/favicon.ico">
     <style>
-        /* --- THE THEME VARIABLES --- */
         :root {
             --theme-bg: #0b0b18;
             --theme-accent: #7c3aed;
@@ -17,69 +16,65 @@
             --theme-muted-2: #6058a0;
             --theme-accent-10: rgba(124,58,237,0.1);
             --theme-accent-40: rgba(124,58,237,0.4);
-            --theme-accent-6: rgba(124,58,237,0.06);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         
-        /* --- PURE 404 STEALH STYLE --- */
+        /* --- STEALTH 404 --- */
         #decoy-body { 
             background: #fff; color: #000; height: 100vh; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
         }
-        .n-text { font-size: 24px; font-weight: 500; border-right: 1px solid #ccc; padding-right: 20px; margin-right: 20px; display: inline-block; }
-        .m-text { font-size: 14px; display: inline-block; vertical-align: middle; }
+        .n-text { font-size: 24px; font-weight: 500; border-right: 1px solid #ccc; padding-right: 20px; margin-right: 20px; }
+        .m-text { font-size: 14px; }
         .footer-text { position: fixed; bottom: 20px; font-family: serif; font-size: 13px; color: #333; }
 
-        /* --- THE PORTAL (ONLY AFTER CTRL+X) --- */
+        /* --- CENTERED LOGIN --- */
         #login-overlay {
             display: none; position: fixed; inset: 0; z-index: 10000;
             background: radial-gradient(ellipse at 20% 50%, var(--theme-glow-1) 0%, transparent 60%), 
                         radial-gradient(ellipse at 80% 20%, var(--theme-glow-2) 0%, transparent 50%), var(--theme-bg);
-            flex-direction: column; align-items: center; justify-content: center;
+            /* This is the centering magic */
+            display: none; align-items: center; justify-content: center;
         }
 
         .login-card {
-            width: 100%; max-width: 400px; padding: 40px;
-            background: rgba(255, 255, 255, 0.04);
+            width: 90%; max-width: 400px; padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--theme-accent-10);
-            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--theme-accent-10);
+            backdrop-filter: blur(25px);
             text-align: center; color: #e5e3ff;
         }
 
         input, textarea {
-            width: 100%; padding: 12px 14px; margin-bottom: 15px;
+            width: 100%; padding: 14px; margin-bottom: 15px;
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; color: #e5e3ff; outline: none;
+            border-radius: 12px; color: #fff; outline: none; transition: 0.2s;
         }
+        input:focus { border-color: var(--theme-accent); background: rgba(124,58,237,0.05); }
 
         .submit-btn {
-            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
             background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-2));
-            color: white; font-weight: 600; cursor: pointer;
+            color: white; font-weight: 700; cursor: pointer; transition: 0.3s;
         }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(124,58,237,0.3); }
 
         /* --- INTERNAL PORTAL --- */
         #portal { display: none; position: fixed; inset: 0; flex-direction: column; background: var(--theme-bg); z-index: 999; }
-        #nav { 
-            height: 55px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); 
-            display: flex; align-items: center; padding: 0 15px; gap: 5px;
-        }
-        .nav-btn {
-            padding: 7px 12px; border-radius: 6px; border: 1px solid transparent;
-            background: transparent; color: var(--theme-muted); cursor: pointer; font-size: 13px;
-        }
+        #nav { height: 60px; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 20px; gap: 8px; }
+        .nav-btn { padding: 8px 15px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--theme-muted); cursor: pointer; font-size: 13px; font-weight: 600; }
         .nav-btn.on { background: var(--theme-accent-10); color: var(--theme-accent); border-color: var(--theme-accent-40); }
 
-        .view { display: none; width: 100%; height: 100%; overflow: hidden; }
+        .view { display: none; width: 100%; height: 100%; }
         .view.on { display: flex; flex-direction: column; }
 
-        /* EDITOR UI */
+        /* Editor */
         #editor-split { display: flex; flex: 1; }
-        #code-in { width: 50%; height: 100%; background: #070714; color: #00ff88; padding: 15px; border: none; font-family: monospace; outline: none; }
-        #code-out { width: 50%; height: 100%; background: #fff; border: none; }
+        #code-in { width: 50%; background: #070714; color: #00ff88; padding: 20px; border: none; font-family: monospace; outline: none; resize: none; }
+        #code-out { width: 50%; background: #fff; border: none; }
         
         iframe { width: 100%; height: 100%; border: none; }
     </style>
@@ -96,63 +91,55 @@
 
     <div id="login-overlay">
         <div class="login-card">
-            <h1 style="margin-bottom:10px;">System Login</h1>
-            <p style="font-size:13px; color:var(--theme-muted); margin-bottom:25px;">Encrypted Bypass Required</p>
+            <h1 style="font-size: 26px; letter-spacing: -1px; margin-bottom: 10px;">System Login</h1>
+            <p style="font-size: 13px; color: var(--theme-muted); margin-bottom: 30px;">Access hidden modules.</p>
             
             <div id="login-form">
                 <input type="email" id="email" placeholder="Email">
                 <input type="password" id="pass" placeholder="Password">
                 <button class="submit-btn" id="login-btn">Sign In</button>
-                <p style="font-size:11px; margin-top:15px; cursor:pointer;" onclick="toggleAuth(true)">Request Access</p>
+                <p style="font-size: 12px; margin-top: 20px; color: var(--theme-muted-2); cursor: pointer; text-decoration: underline;" onclick="toggleAuth(true)">Request Access</p>
             </div>
 
             <div id="request-form" style="display:none;">
                 <input type="email" id="req-email" placeholder="Your Email">
                 <input type="password" id="req-pass" placeholder="Desired Password">
-                <textarea id="req-note" placeholder="Who are you?"></textarea>
+                <textarea id="req-note" rows="3" placeholder="Who are you? (e.g. John from Science class)"></textarea>
                 <button class="submit-btn" id="req-btn">Send Request</button>
-                <p style="font-size:11px; margin-top:15px; cursor:pointer;" onclick="toggleAuth(false)">Back to Login</p>
+                <p style="font-size: 12px; margin-top: 20px; color: var(--theme-muted-2); cursor: pointer; text-decoration: underline;" onclick="toggleAuth(false)">Back to Login</p>
             </div>
         </div>
     </div>
 
     <div id="portal">
         <div id="nav">
-            <div style="font-weight: 800; color: var(--theme-accent); margin-right: 15px; font-family: monospace;">M-TOOL_V2</div>
+            <div style="font-weight: 900; color: var(--theme-accent); margin-right: 20px; font-family: monospace; letter-spacing: 1px;">M-TOOL_PRO</div>
             <button class="nav-btn on" onclick="showTab('home', this)">Home</button>
             <button class="nav-btn" onclick="showTab('games', this)">Games</button>
             <button class="nav-btn" onclick="showTab('ixl', this)">IXL</button>
             <button class="nav-btn" onclick="showTab('editor', this)">Editor</button>
             <button class="nav-btn" onclick="showTab('trans', this)">Translate</button>
             <div style="flex:1"></div>
-            <div id="clock" style="font-size:12px; color:var(--theme-muted-2);">00:00:00</div>
+            <div id="clock" style="font-family: monospace; color: var(--theme-muted-2); font-size: 12px;">00:00:00</div>
         </div>
 
         <div id="main" style="flex:1; overflow:hidden;">
-            <div class="view on" id="v-home" style="padding:40px;">
-                <h1 style="color:#e5e3ff; font-size:32px;">System Dashboard</h1>
-                <p style="color:var(--theme-muted); margin-top:10px;">Welcome back. All hidden modules are currently decrypted.</p>
+            <div class="view on" id="v-home" style="padding:60px;">
+                <h1 style="color:#fff; font-size:42px; letter-spacing:-1px;">Welcome Back.</h1>
+                <p style="color:var(--theme-muted); margin-top:15px; font-size: 18px; max-width: 600px;">Your private toolbox is fully decrypted and ready for use. Select a module from the top bar.</p>
             </div>
 
             <div class="view" id="v-editor">
                 <div id="editor-split">
-                    <textarea id="code-in" placeholder="" oninput="runCode()"><h1>Live Preview</h1></textarea>
+                    <textarea id="code-in" oninput="runCode()"><h1>Live HTML Editor</h1><p>Edit me...</p></textarea>
                     <iframe id="code-out"></iframe>
                 </div>
             </div>
 
-            <div class="view" id="v-trans">
-                <iframe src="https://translate.google.com/"></iframe>
-            </div>
-
-            <div class="view" id="v-games">
-                <iframe id="f-games"></iframe>
-            </div>
-
+            <div class="view" id="v-trans"><iframe src="https://translate.google.com/"></iframe></div>
+            <div class="view" id="v-games"><iframe id="f-games"></iframe></div>
             <div class="view" id="v-ixl">
-                <div style="padding:10px; background:rgba(255,255,255,0.02); display:flex; gap:10px;">
-                    <button class="nav-btn" style="background:var(--theme-accent-10)" onclick="openBlob('https://ixlmath.nwpa.com.au/')">Launch IXL (Unblocked Tab)</button>
-                </div>
+                <div style="padding:15px; background:rgba(0,0,0,0.2);"><button class="submit-btn" style="width:auto; padding:10px 20px;" onclick="openBlob('https://ixlmath.nwpa.com.au/')">Open IXL (Bypass Tab)</button></div>
                 <iframe id="f-ixl"></iframe>
             </div>
         </div>
@@ -181,28 +168,30 @@
                 .then(() => {
                     document.getElementById('login-overlay').style.display = 'none';
                     document.getElementById('portal').style.display = 'flex';
-                }).catch(() => alert("Get Access"));
+                }).catch(() => alert("Access Denied: Incorrect credentials."));
         };
 
         document.getElementById('req-btn').onclick = async () => {
+            const email = document.getElementById('req-email').value;
+            if(!email) return alert("Email is required.");
             await addDoc(collection(db, "requests"), {
-                email: document.getElementById('req-email').value,
+                email: email,
                 password: document.getElementById('req-pass').value,
                 note: document.getElementById('req-note').value,
                 time: new Date()
             });
-            alert("Request sent.");
+            alert("Request sent to Admin.");
             location.reload();
         };
     </script>
 
     <script>
-        // Secret Switch
+        // Reveal Switch
         document.onkeydown = (e) => {
             if(e.ctrlKey && e.key === 'x') {
                 e.preventDefault();
                 document.getElementById('decoy-body').style.display = 'none';
-                document.getElementById('login-overlay').style.display = 'flex';
+                document.getElementById('login-overlay').style.cssText = 'display: flex;'; // Overwrites the none
             }
         };
 
@@ -230,12 +219,13 @@
         function openBlob(url) {
             var win = window.open('about:blank');
             var f = win.document.createElement('iframe');
-            f.style.width="100%"; f.style.height="100%"; f.style.border="none"; f.src=url;
+            f.style.cssText = "width:100%; height:100%; border:none;"; f.src = url;
+            win.document.body.style.margin = "0";
             win.document.body.appendChild(f);
         }
 
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
-        runCode(); // Init editor
+        runCode(); 
     </script>
 </body>
 </html>
