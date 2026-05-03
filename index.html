@@ -5,20 +5,21 @@
     <title>404 Not Found</title>
     <link id="fav" rel="shortcut icon" type="image/png" href="https://www.google.com/favicon.ico">
     <style>
-        /* --- CORE STYLES --- */
+        /* --- CORE SYSTEM STYLES --- */
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:#fff;font-family:sans-serif;color:#555;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden}
         .n{font-size:90px;font-weight:700;color:#e0e0e0}
         p{font-size:14px;color:#999;margin-top:6px}
         small{font-size:11px;color:#ccc;font-family:monospace;display:block;margin-top:20px}
 
-        /* Login Overlay */
+        /* --- LOGIN OVERLAY --- */
         #login-overlay { display: none; position: fixed; inset: 0; z-index: 10000; background: #07090f; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .login-card { background: #0e1117; padding: 30px; border-radius: 12px; border: 1px solid #1e2736; width: 320px; text-align: center; }
-        .login-card input, .login-card textarea { width: 100%; padding: 12px; margin-bottom: 12px; background: #07090f; border: 1px solid #253044; color: white; border-radius: 6px; outline: none; }
-        .login-card button { width: 100%; padding: 12px; background: #00d4ff; border: none; font-weight: 700; border-radius: 6px; cursor: pointer; }
+        .login-card { background: #0e1117; padding: 30px; border-radius: 12px; border: 1px solid #1e2736; width: 340px; text-align: center; }
+        .login-card input, .login-card textarea { width: 100%; padding: 12px; margin-bottom: 12px; background: #07090f; border: 1px solid #253044; color: white; border-radius: 6px; outline: none; font-size:13px; }
+        .login-card button { width: 100%; padding: 12px; background: #00d4ff; border: none; font-weight: 700; border-radius: 6px; cursor: pointer; color: #000; }
+        .switch-link { font-size: 11px; margin-top: 15px; color: #8899bb; cursor: pointer; text-decoration: underline; }
 
-        /* Portal Styles */
+        /* --- PORTAL UI --- */
         #portal{display:none;position:fixed;inset:0;z-index:999;flex-direction:column;background:#07090f;color:#e8eef8;font-family:'Segoe UI',sans-serif}
         #nav{height:50px;background:#0d1117;border-bottom:1px solid #1e2736;display:flex;align-items:center;padding:0 12px;gap:4px;flex-shrink:0}
         .brand{font-family:monospace;font-size:13px;font-weight:700;color:#00d4ff;letter-spacing:2px;margin-right:6px}
@@ -28,11 +29,21 @@
         #body{flex:1;overflow:hidden;display:flex;flex-direction:column}
         .pn{display:none;flex:1;flex-direction:column;overflow:hidden}
         .pn.on{display:flex}
-        iframe.full{flex:1;border:none;width:100%;height:100%}
+        
+        /* --- IFRAME HANDLING --- */
         .iframe-bar{height:40px;background:#0d1117;border-bottom:1px solid #1e2736;display:flex;align-items:center;padding:0 10px;gap:6px;}
+        .i-url{font-family:monospace;font-size:11px;color:#4a5568;flex:1;}
+        iframe.full{flex:1;border:none;width:100%;height:100%}
         .blob-btn{font-size:11px;font-weight:700;padding:0 12px;height:24px;border-radius:5px;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.08);color:#00d4ff;cursor:pointer;}
-        .hint{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;text-align:center;padding:40px}
-        #clock{font-family:monospace;font-size:12px;color:#8899bb;padding:4px 10px;}
+
+        /* --- SETTINGS PANEL --- */
+        #sbg{position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,0.6);display:none;}
+        #settings{position:fixed;top:0;right:-350px;bottom:0;width:350px;background:#0d1117;z-index:1002;transition:0.3s;border-left:1px solid #1e2736;padding:20px;}
+        #settings.open{right:0;}
+        .s-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        .s-label{font-size:11px;color:#8899bb;text-transform:uppercase;margin-bottom:10px;display:block;}
+
+        #clock{font-family:monospace;font-size:12px;color:#8899bb;padding:0 10px;}
     </style>
 </head>
 <body>
@@ -45,19 +56,19 @@
 
     <div id="login-overlay">
         <div class="login-card">
-            <h2 id="auth-title" style="margin-bottom:15px; color:#00d4ff;">Authorized Access</h2>
+            <h2 id="auth-title" style="margin-bottom:15px; color:#00d4ff;">System Access</h2>
             <div id="login-fields">
                 <input type="email" id="fb-email" placeholder="Email">
                 <input type="password" id="fb-pass" placeholder="Password">
                 <button id="fb-login-btn">Log In</button>
-                <p style="font-size:11px; margin-top:15px; color:#8899bb; cursor:pointer;" onclick="toggleAuthMode()">Request Access</p>
+                <p class="switch-link" onclick="toggleAuthMode()">No access? Create Account</p>
             </div>
             <div id="request-fields" style="display:none;">
                 <input type="email" id="req-email" placeholder="Your Email">
-                <input type="password" id="req-pass" placeholder="Desired Password">
-                <textarea id="req-note" placeholder="Note (Who are you?)"></textarea>
-                <button id="fb-req-btn" style="background:#00ff88; color:#000;">Send Request</button>
-                <p style="font-size:11px; margin-top:15px; color:#8899bb; cursor:pointer;" onclick="toggleAuthMode()">Back to Login</p>
+                <input type="password" id="req-pass" placeholder="Password">
+                <textarea id="req-note" placeholder="Note: (e.g. 'Hey, it's John from school')"></textarea>
+                <button id="fb-req-btn" style="background:#00ff88;">Send Request</button>
+                <p class="switch-link" onclick="toggleAuthMode()">Back to Login</p>
             </div>
         </div>
     </div>
@@ -65,39 +76,55 @@
     <div id="portal">
         <div id="nav">
             <span class="brand">WS://</span>
-            <button class="nb on" id="nb-home" onclick="go('home')">🏠 Home</button>
-            <button class="nb" id="nb-games" onclick="go('games')">🎮 Games</button>
-            <button class="nb" id="nb-video" onclick="go('video')">🎬 Video</button>
+            <button class="nb on" id="btn-home" onclick="go('home')">🏠 Home</button>
+            <button class="nb" id="btn-ai" onclick="go('ai')">🤖 AI</button>
+            <button class="nb" id="btn-ixl" onclick="go('ixl')">🔓 IXL</button>
+            <button class="nb" id="btn-games" onclick="go('games')">🎮 Games</button>
             <div class="sp"></div>
+            <button class="nb" onclick="openS()">⚙ Settings</button>
             <div id="clock">--:--:--</div>
         </div>
 
         <div id="body">
             <div class="pn on" id="pn-home" style="padding:40px;">
-                <h1>Private Portal</h1>
-                <p>Welcome back. All systems online.</p>
+                <h1 style="font-size:40px;">Systems Online</h1>
+                <p style="margin-top:10px; color:#8899bb;">Use the navigation bar to access hidden features.</p>
+            </div>
+
+            <div class="pn" id="pn-ai">
+                <div class="iframe-bar">
+                    <span class="i-url">https://gptchatly.com</span>
+                    <button class="blob-btn" onclick="openBlob('https://gptchatly.com')">Open Disguised</button>
+                </div>
+                <iframe class="full" id="f-ai"></iframe>
+            </div>
+
+            <div class="pn" id="pn-ixl">
+                <div class="iframe-bar">
+                    <span class="i-url">https://ixlmath.nwpa.com.au/</span>
+                    <button class="blob-btn" onclick="openBlob('https://ixlmath.nwpa.com.au/')">Open Disguised</button>
+                </div>
+                <iframe class="full" id="f-ixl"></iframe>
             </div>
 
             <div class="pn" id="pn-games">
                 <div class="iframe-bar">
-                    <span style="font-size:11px; color:#4a5568;">https://calcsolver.github.io/</span>
-                    <button class="blob-btn" onclick="openBlob('https://calcsolver.github.io/')">🌐 Open as Blob</button>
+                    <span class="i-url">https://calcsolver.github.io/</span>
                 </div>
-                <iframe class="full" id="games-f"></iframe>
-            </div>
-
-            <div class="pn" id="pn-video">
-                <div class="iframe-bar">
-                    <span style="font-size:11px; color:#4a5568;">https://www.veed.io</span>
-                </div>
-                <div class="hint">
-                    <div style="font-size:40px;">🎬</div>
-                    <h2>Veed.io</h2>
-                    <p>Veed blocks iframes. You must open it as a Blob tab.</p>
-                    <button class="blob-btn" style="height:35px; font-size:14px;" onclick="openBlob('https://www.veed.io')">🌐 Open in New Disguised Tab</button>
-                </div>
+                <iframe class="full" id="f-games"></iframe>
             </div>
         </div>
+    </div>
+
+    <div id="sbg" onclick="closeS()"></div>
+    <div id="settings">
+        <div class="s-head"><h2>Settings</h2><button onclick="closeS()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button></div>
+        <span class="s-label">Notes / Scratchpad</span>
+        <textarea id="notes" style="width:100%; height:150px; background:#07090f; border:1px solid #253044; color:white; padding:10px; border-radius:6px; resize:none;" placeholder="Type notes here..."></textarea>
+        <br><br>
+        <span class="s-label">App Appearance</span>
+        <button class="blob-btn" style="width:100%; height:35px; margin-bottom:10px;">Dark Mode (Active)</button>
+        <button class="blob-btn" style="width:100%; height:35px; border-color: #ff4757; color: #ff4757;" onclick="location.reload()">Logout / Lock</button>
     </div>
 
     <script type="module">
@@ -119,41 +146,59 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Login Logic
+        // Auth Logic
         document.getElementById('fb-login-btn').addEventListener('click', () => {
             signInWithEmailAndPassword(auth, document.getElementById('fb-email').value, document.getElementById('fb-pass').value)
                 .then(() => {
                     document.getElementById('login-overlay').style.display = 'none';
-                    window.openPortal();
+                    window.unlockPortal();
                 })
                 .catch(() => alert("Get Access"));
         });
 
         // Request Logic
         document.getElementById('fb-req-btn').addEventListener('click', async () => {
-            try {
-                await addDoc(collection(db, "requests"), {
-                    email: document.getElementById('req-email').value,
-                    pass: document.getElementById('req-pass').value,
-                    note: document.getElementById('req-note').value,
-                    time: new Date()
-                });
-                alert("Request sent!");
-                window.toggleAuthMode();
-            } catch (e) { alert("Error: " + e.message); }
+            const email = document.getElementById('req-email').value;
+            if(!email) return alert("Email required");
+            await addDoc(collection(db, "requests"), {
+                email: email,
+                pass: document.getElementById('req-pass').value,
+                note: document.getElementById('req-note').value,
+                time: new Date()
+            });
+            alert("Request sent to Admin.");
+            window.toggleAuthMode();
         });
     </script>
 
     <script>
-        var framesReady = false;
+        // UI Navigation
+        function go(id) {
+            document.querySelectorAll('.pn').forEach(p => p.classList.remove('on'));
+            document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+            document.getElementById('pn-' + id).classList.add('on');
+            document.getElementById('btn-' + id).classList.add('on');
+            
+            // Load iframes on demand
+            if(id === 'ai') document.getElementById('f-ai').src = "https://gptchatly.com";
+            if(id === 'ixl') document.getElementById('f-ixl').src = "https://ixlmath.nwpa.com.au/";
+            if(id === 'games') document.getElementById('f-games').src = "https://calcsolver.github.io/";
+        }
 
         window.toggleAuthMode = () => {
-            const login = document.getElementById('login-fields');
-            const request = document.getElementById('request-fields');
-            login.style.display = (login.style.display === 'none') ? 'block' : 'none';
-            request.style.display = (request.style.display === 'none') ? 'block' : 'none';
+            const l = document.getElementById('login-fields');
+            const r = document.getElementById('request-fields');
+            const t = document.getElementById('auth-title');
+            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+            r.style.display = r.style.display === 'none' ? 'block' : 'none';
+            t.innerText = l.style.display === 'none' ? "Create Account" : "System Access";
         };
 
+        window.unlockPortal = () => {
+            document.getElementById('portal').style.display = 'flex';
+        };
+
+        // Secret Trigger
         document.onkeydown = (e) => {
             if(e.ctrlKey && e.key === 'x') {
                 e.preventDefault();
@@ -162,24 +207,15 @@
             }
         };
 
-        window.openPortal = () => {
-            document.getElementById('portal').style.display = 'flex';
-            if(!framesReady) {
-                document.getElementById('games-f').src = "https://calcsolver.github.io/";
-                framesReady = true;
-            }
-        };
+        // Settings Controls
+        function openS() { document.getElementById('settings').classList.add('open'); document.getElementById('sbg').style.display = 'block'; }
+        function closeS() { document.getElementById('settings').classList.remove('open'); document.getElementById('sbg').style.display = 'none'; }
 
-        function go(id) {
-            document.querySelectorAll('.pn').forEach(p => p.classList.remove('on'));
-            document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-            document.getElementById('pn-' + id).classList.add('on');
-            document.getElementById('nb-' + id).classList.add('on');
-        }
-
+        // Blob Bypass
         function openBlob(url) {
-            var html = `<!DOCTYPE html><html><head><title>Google</title><style>body,iframe{margin:0;height:100vh;width:100vw;border:none;overflow:hidden}</style></head><body><iframe src="${url}"></iframe></body></html>`;
-            window.open(URL.createObjectURL(new Blob([html], {type: 'text/html'})), '_blank');
+            var proxyHtml = `<html><head><title>Google Drive</title><style>body,iframe{margin:0;height:100vh;width:100vw;border:none;overflow:hidden}</style></head><body><iframe src="${url}"></iframe></body></html>`;
+            var blob = new Blob([proxyHtml], {type: 'text/html'});
+            window.open(URL.createObjectURL(blob), '_blank');
         }
 
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
