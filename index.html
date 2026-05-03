@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Proxy Data</title>
+</head>
+<body>
+    <h1>Latest Scraped Info</h1>
+    <div id="content">Loading data...</div>
+
+    <script>
+        // Fetches the JSON file created by your Python script
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('content').innerHTML = 
+                    `<p>Current Proxy IP: ${data.origin}</p>`;
+            })
+            .catch(err => {
+                document.getElementById('content').innerText = "No data found yet.";
+            });
+    </script>
+</body>
+</html>
