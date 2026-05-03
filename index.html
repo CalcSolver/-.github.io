@@ -1,31 +1,62 @@
-// 1. We change the imports to use the web URLs (CDN)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Login</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; }
+        .login-card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { display: block; width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
 
-// 2. Your specific config you just copied
-const firebaseConfig = {
-  apiKey: "AIzaSyD5TALVIdPm5P8RuKjINsOmKW1XrK53u1Q",
-  authDomain: "testing-12bc9.firebaseapp.com",
-  projectId: "testing-12bc9",
-  storageBucket: "testing-12bc9.firebasestorage.app",
-  messagingSenderId: "626782607651",
-  appId: "1:626782607651:web:c5980863cef82d904a5496",
-  measurementId: "G-B5RQYLYCQ9"
-};
+    <div class="login-card">
+        <h2>Login</h2>
+        <input type="email" id="userEmail" placeholder="Email Address">
+        <input type="password" id="userPass" placeholder="Password">
+        <button id="submitBtn">Sign In</button>
+    </div>
 
-// 3. Initialize Firebase and Auth
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    <script type="module">
+        // 1. Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 4. Function to handle the login logic
-window.loginUser = (email, password) => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      console.log("Success! Logged in as:", userCredential.user.email);
-      alert("Welcome!");
-    })
-    .catch((error) => {
-      console.error("Login failed:", error.message);
-      alert("Error: " + error.message);
-    });
-};
+        // 2. Your Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5TALVIdPm5P8RuKjINsOmKW1XrK53u1Q",
+            authDomain: "testing-12bc9.firebaseapp.com",
+            projectId: "testing-12bc9",
+            storageBucket: "testing-12bc9.firebasestorage.app",
+            messagingSenderId: "626782607651",
+            appId: "1:626782607651:web:c5980863cef82d904a5496",
+            measurementId: "G-B5RQYLYCQ9"
+        };
+
+        // 3. Initialize
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 4. Connect Button to Logic
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPass').value;
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    alert("Success! Welcome back.");
+                    console.log("User:", userCredential.user);
+                    // You can redirect the user here:
+                    // window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    alert("Error: " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
