@@ -1,1 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <link id="fav" rel="shortcut icon" type="image/png" href="https://www.google.com/favicon.ico">
+    <style>
+        :root {
+            --theme-bg: #0b0b18;
+            --theme-accent: #7c3aed;
+            --theme-accent-2: #4f46e5;
+            --theme-glow-1: rgba(124,58,237,0.15);
+            --theme-glow-2: rgba(79,70,229,0.1);
+            --theme-muted: #8078a8;
+            --theme-muted-2: #6058a0;
+            --theme-accent-10: rgba(124,58,237,0.1);
+            --theme-accent-40: rgba(124,58,237,0.4);
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        /* --- 404 STEALTH MODE --- */
+        #decoy-body { 
+            background: #fff; color: #000; height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        .n-text { font-size: 24px; font-weight: 500; border-right: 1px solid #ccc; padding-right: 20px; margin-right: 20px; }
+        .m-text { font-size: 14px; }
+
+        /* --- THE NEW LOG-IN EXPERIENCE --- */
+        #login-overlay {
+            display: none; position: fixed; inset: 0; z-index: 10000;
+            background: var(--theme-bg);
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--theme-glow-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, var(--theme-glow-2) 0%, transparent 50%);
+            align-items: center; justify-content: center;
+        }
+
+        .login-card {
+            width: 90%; max-width: 420px; padding: 45px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px var(--theme-accent-10);
+            backdrop-filter: blur(30px);
+            text-align: center; color: #e5e3ff;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-card h1 { 
+            font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; 
+            background: linear-gradient(to bottom, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .login-card p { font-size: 14px; color: var(--theme-muted); margin-bottom: 32px; }
+
+        input, textarea {
+            width: 100%; padding: 15px; margin-bottom: 18px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; color: #fff; outline: none; transition: all 0.3s ease; font-size: 15px;
+        }
+        input:focus { 
+            border-color: var(--theme-accent); 
+            background: rgba(124,58,237,0.08); 
+            box-shadow: 0 0 20px rgba(124,58,237,0.15);
+        }
+
+        .submit-btn {
+            width: 100%; padding: 15px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-2));
+            color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 8px 25px rgba(124,58,237,0.3);
+        }
+        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(124,58,237,0.5); opacity: 0.95; }
+        .submit-btn:active { transform: translateY(-1px); }
+
+        .switch-link { 
+            font-size: 13px; margin-top: 25px; color: var(--theme-muted); cursor: pointer; 
+            transition: 0.2s; display: inline-block;
+        }
+        .switch-link:hover { color: var(--theme-accent); text-decoration: underline; }
+
+        /* --- PORTAL UI --- */
+        #portal { display: none; position: fixed; inset: 0; flex-direction: column; background: var(--theme-bg); z-index: 999; }
+        #nav { height: 65px; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 25px; gap: 10px; }
+        .nav-btn { padding: 9px 16px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--theme-muted); cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+        .nav-btn.on { background: var(--theme-accent-10); color: var(--theme-accent); border-color: var(--theme-accent-40); }
+        .nav-btn:hover:not(.on) { color: #fff; background: rgba(255,255,255,0.05); }
+
+        .view { display: none; width: 100%; height: 100%; overflow: hidden; }
+        .view.on { display: flex; flex-direction: column; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #editor-split { display: flex; flex: 1; }
+        #code-in { width: 50%; background: #070714; color: #00ff88; padding: 25px; border: none; font-family: 'Fira Code', monospace; outline: none; resize: none; font-size: 14px; }
+        #code-out { width: 50%; background: #fff; border: none; }
+    </style>
+</head>
+<body>
+
+    <div id="decoy-body">
+        <div>
+            <span class="n-text">404</span>
+            <span class="m-text">Not Found</span>
+        </div>
+        <div style="position: fixed; bottom: 20px; font-family: serif; font-size: 13px; color: #333;">nginx/1.24.0</div>
+    </div>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>System Login</h1>
+            <p>Authorization required to access portal.</p>
+            
+            <div id="login-form">
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="password" id="pass" placeholder="Password">
+                <button class="submit-btn" id="login-btn">Sign In</button>
+                <div class="switch-link" onclick="toggleAuth(true)">Don't have access? Request here.</div>
+            </div>
+
+            <div id="request-form" style="display:none;">
+                <input type="email" id="req-email" placeholder="Your Email">
+                <input type="password" id="req-pass" placeholder="Create Password">
+                <textarea id="req-note" rows="3" placeholder="Note to Admin (e.g. 'I'm from 2nd period math')"></textarea>
+                <button class="submit-btn" id="req-btn" style="background: linear-gradient(135deg, #4f46e5, #3730a3);">Submit Request</button>
+                <div class="switch-link" onclick="toggleAuth(false)">Back to Login</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="portal">
+        <div id="nav">
+            <div style="font-weight: 900; color: var(--theme-accent); margin-right: 25px; font-family: monospace; letter-spacing: 2px; font-size: 18px;">M-TOOL</div>
+            <button class="nav-btn on" onclick="showTab('home', this)">Home</button>
+            <button class="nav-btn" onclick="showTab('games', this)">Games</button>
+            <button class="nav-btn" onclick="showTab('ixl', this)">IXL</button>
+            <button class="nav-btn" onclick="showTab('editor', this)">Editor</button>
+            <button class="nav-btn" onclick="showTab('trans', this)">Translate</button>
+            <div style="flex:1"></div>
+            <div id="clock" style="font-family: monospace; color: var(--theme-muted-2); font-size: 14px; font-weight: 600;">00:00:00</div>
+        </div>
+
+        <div id="main" style="flex:1; overflow:hidden;">
+            <div class="view on" id="v-home" style="padding:80px; background: radial-gradient(circle at bottom right, var(--theme-glow-1), transparent);">
+                <h1 style="color:#fff; font-size:48px; letter-spacing:-2px; margin-bottom: 20px;">Welcome Back.</h1>
+                <p style="color:var(--theme-muted); font-size: 18px; max-width: 600px; line-height: 1.6;">Your private suite of tools is now unlocked. Navigate through the top menu to access unblocked content and utility modules.</p>
+            </div>
+
+            <div class="view" id="v-editor">
+                <div id="editor-split">
+                    <textarea id="code-in" oninput="runCode()"><h1>Editor</h1><p>Start coding...</p></textarea>
+                    <iframe id="code-out"></iframe>
+                </div>
+            </div>
+
+            <div class="view" id="v-trans"><iframe src="https://translate.google.com/"></iframe></div>
+            <div class="view" id="v-games"><iframe id="f-games"></iframe></div>
+            <div class="view" id="v-ixl">
+                <div style="padding:20px; background:rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <button class="submit-btn" style="width:auto; padding:12px 30px;" onclick="openBlob('https://ixlmath.nwpa.com.au/')">Launch IXL (Stealth Tab)</button>
+                </div>
+                <iframe id="f-ixl"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5TALVIdPm5P8RuKjINsOmKW1XrK53u1Q",
+            authDomain: "testing-12bc9.firebaseapp.com",
+            projectId: "testing-12bc9",
+            storageBucket: "testing-12bc9.firebasestorage.app",
+            messagingSenderId: "626782607651",
+            appId: "1:626782607651:web:c5980863cef82d904a5496"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('login-btn').onclick = () => {
+            signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value)
+                .then(() => {
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('portal').style.display = 'flex';
+                }).catch(() => alert("Access Denied."));
+        };
+
+        document.getElementById('req-btn').onclick = async () => {
+            const email = document.getElementById('req-email').value;
+            if(!email) return alert("Email required.");
+            await addDoc(collection(db, "requests"), {
+                email: email,
+                password: document.getElementById('req-pass').value,
+                note: document.getElementById('req-note').value,
+                time: new Date()
+            });
+            alert("Request submitted.");
+            location.reload();
+        };
+    </script>
+
+    <script>
+        // Reveal Switch (CTRL + X)
+        document.onkeydown = (e) => {
+            if(e.ctrlKey && e.key === 'x') {
+                e.preventDefault();
+                document.getElementById('decoy-body').style.display = 'none';
+                document.getElementById('login-overlay').style.display = 'flex';
+            }
+        };
+
+        function toggleAuth(req) {
+            document.getElementById('login-form').style.display = req ? 'none' : 'block';
+            document.getElementById('request-form').style.display = req ? 'block' : 'none';
+        }
+
+        function showTab(id, b) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('on'));
+            document.getElementById('v-' + id).classList.add('on');
+            b.classList.add('on');
+            
+            if(id === 'games') document.getElementById('f-games').src = "https://calcsolver.github.io/";
+            if(id === 'ixl') document.getElementById('f-ixl').src = "https://ixlmath.nwpa.com.au/";
+        }
+
+        function runCode() {
+            const html = document.getElementById('code-in').value;
+            const out = document.getElementById('code-out').contentWindow.document;
+            out.open(); out.write(html); out.close();
+        }
+
+        function openBlob(url) {
+            var win = window.open('about:blank');
+            var f = win.document.createElement('iframe');
+            f.style.cssText = "width:100%; height:100%; border:none; margin:0; padding:0;"; 
+            f.src = url;
+            win.document.body.style.margin = "0";
+            win.document.body.appendChild(f);
+        }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        runCode(); 
+    </script>
+</body>
+</html>
